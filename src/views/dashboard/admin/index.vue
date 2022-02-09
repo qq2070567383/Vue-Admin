@@ -1,3 +1,4 @@
+<!-- 超级管理员组件 -->
 <template>
   <div class="dashboard-editor-container">
     <github-corner class="github-corner" />
@@ -41,15 +42,15 @@
 </template>
 
 <script>
-import GithubCorner from '@/components/GithubCorner'
-import PanelGroup from './components/PanelGroup'
-import LineChart from './components/LineChart'
-import RaddarChart from './components/RaddarChart'
-import PieChart from './components/PieChart'
-import BarChart from './components/BarChart'
-import TransactionTable from './components/TransactionTable'
-import TodoList from './components/TodoList'
-import BoxCard from './components/BoxCard'
+import GithubCorner from '@/components/GithubCorner' // 导入右上角小猫咪组件
+import PanelGroup from './components/PanelGroup' // 导入头像组件
+import LineChart from './components/LineChart' // 导入线性图表
+import RaddarChart from './components/RaddarChart' // 导入雷达图
+import PieChart from './components/PieChart' // 导入饼图
+import BarChart from './components/BarChart' //
+import TransactionTable from './components/TransactionTable' //
+import TodoList from './components/TodoList' //
+import BoxCard from './components/BoxCard' //
 
 const lineChartData = {
   newVisitis: {

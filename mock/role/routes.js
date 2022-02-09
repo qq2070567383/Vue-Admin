@@ -1,4 +1,4 @@
-// Just a mock data
+// 只是侧边框模拟的数据
 
 const constantRoutes = [
   {

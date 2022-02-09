@@ -1,12 +1,16 @@
-const chokidar = require('chokidar')
-const bodyParser = require('body-parser')
-const chalk = require('chalk')
-const path = require('path')
-const Mock = require('mockjs')
+const chokidar = require('chokidar')    //监听文件变化
+const bodyParser = require('body-parser')   //解析http请求体
+const chalk = require('chalk')    //控制台输出着色
+const path = require('path')    //导入路径，用来处理相对和绝对路径
+const Mock = require('mockjs')    //导入mockjs，用来模拟数据
 
-const mockDir = path.join(process.cwd(), 'mock')
+//path.join方法用于连接路径，
+//process.cwd() 是当前Node.js进程执行时的文件夹地址——工作目录
+// 获取mock静态返回数据所在的目录
+const mockDir = path.join(process.cwd(), 'mock')  
 
-function registerRoutes(app) {
+//已经登记的路由
+function registerRoutes (app) {
   let mockLastIndex
   const { mocks } = require('./index.js')
   const mocksForServer = mocks.map(route => {
@@ -23,7 +27,8 @@ function registerRoutes(app) {
   }
 }
 
-function unregisterRoutes() {
+//未注册的路由
+function unregisterRoutes () {
   Object.keys(require.cache).forEach(i => {
     if (i.includes(mockDir)) {
       delete require.cache[require.resolve(i)]
@@ -31,12 +36,12 @@ function unregisterRoutes() {
   })
 }
 
-// for mock server
+// 对url进行正则匹配，默认类型设置为get，判断respond是不是一个函数是的话就传入req和res
 const responseFake = (url, type, respond) => {
   return {
     url: new RegExp(`${process.env.VUE_APP_BASE_API}${url}`),
     type: type || 'get',
-    response(req, res) {
+    response (req, res) {
       console.log('request invoke:' + req.path)
       res.json(Mock.mock(respond instanceof Function ? respond(req, res) : respond))
     }
@@ -45,7 +50,8 @@ const responseFake = (url, type, respond) => {
 
 module.exports = app => {
   // parse app.body
-  // https://expressjs.com/en/4x/api.html#req.body
+  // https://expressjs.com/en/4x/api.html#req.body  
+   //添加插件
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({
     extended: true
@@ -55,7 +61,7 @@ module.exports = app => {
   var mockRoutesLength = mockRoutes.mockRoutesLength
   var mockStartIndex = mockRoutes.mockStartIndex
 
-  // watch files, hot reload mock server
+  // 监视文件，热重新加载模拟服务器
   chokidar.watch(mockDir, {
     ignored: /mock-server/,
     ignoreInitial: true

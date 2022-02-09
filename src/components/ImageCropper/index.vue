@@ -1,10 +1,13 @@
+<!-- 头像上传组件-->
 <template>
   <div v-show="value" class="vue-image-crop-upload">
     <div class="vicp-wrap">
+      <!-- 右上角的x，使用了两个伪类元素制作 -->
       <div class="vicp-close" @click="off">
         <i class="vicp-icon4" />
       </div>
 
+      <!-- 图片上传之前 -->
       <div v-show="step == 1" class="vicp-step1">
         <div
           class="vicp-drop-area"
@@ -14,28 +17,38 @@
           @click="handleClick"
           @drop="handleChange"
         >
+          <!-- 制作上传图标 -->
           <i v-show="loading != 1" class="vicp-icon1">
             <i class="vicp-icon1-arrow" />
             <i class="vicp-icon1-body" />
             <i class="vicp-icon1-bottom" />
           </i>
+          <!-- 图标下面那行文字 -->
           <span v-show="loading !== 1" class="vicp-hint">{{ lang.hint }}</span>
+          <!-- 不支持浏览器，请使用IE10+或其他浏览器 -->
           <span v-show="!isSupported" class="vicp-no-supported-hint">{{ lang.noSupported }}</span>
+          <!-- 文件上传 -->
           <input v-show="false" v-if="step == 1" ref="fileinput" type="file" @change="handleChange">
         </div>
+        <!-- 图片上传失败，错误消息提示 -->
         <div v-show="hasError" class="vicp-error">
+          <!-- 前面那个红叉叉 -->
           <i class="vicp-icon2" />
           {{ errorMsg }}
         </div>
+        <!-- 取消按钮 -->
         <div class="vicp-operate">
           <a @click="off" @mousedown="ripple">{{ lang.btn.off }}</a>
         </div>
       </div>
 
+      <!-- 图片上传之后 -->
       <div v-if="step == 2" class="vicp-step2">
         <div class="vicp-crop">
+          <!-- 左边图片 -->
           <div v-show="true" class="vicp-crop-left">
             <div class="vicp-img-container">
+              <!-- 图片 -->
               <img
                 ref="img"
                 :src="sourceImgUrl"
@@ -58,10 +71,12 @@
                 @mouseup="createImg"
                 @mouseout="createImg"
               >
+              <!-- 图片左边白色半透明盒子 -->
               <div :style="sourceImgShadeStyle" class="vicp-img-shade vicp-img-shade-1" />
+              <!-- 图片右边白色半透明盒子 -->
               <div :style="sourceImgShadeStyle" class="vicp-img-shade vicp-img-shade-2" />
             </div>
-
+            <!-- 中间小球 -->
             <div class="vicp-range">
               <input
                 :value="scale.range"
@@ -71,12 +86,14 @@
                 max="100"
                 @input="zoomChange"
               >
+              <!-- 左边-号 -->
               <i
                 class="vicp-icon5"
                 @mousedown="startZoomSub"
                 @mouseout="endZoomSub"
                 @mouseup="endZoomSub"
               />
+              <!-- 右边+号 -->
               <i
                 class="vicp-icon6"
                 @mousedown="startZoomAdd"
@@ -84,18 +101,23 @@
                 @mouseup="endZoomAdd"
               />
             </div>
-
+            <!-- 旋转按钮，默认不显示 -->
             <div v-if="!noRotate" class="vicp-rotate">
+              <!-- 左边旋转按钮 -->
               <i @mousedown="startRotateLeft" @mouseout="endRotate" @mouseup="endRotate">↺</i>
+              <!-- 右边旋转按钮 -->
               <i @mousedown="startRotateRight" @mouseout="endRotate" @mouseup="endRotate">↻</i>
             </div>
           </div>
+          <!-- 右边图片 -->
           <div v-show="true" class="vicp-crop-right">
             <div class="vicp-preview">
+              <!-- 正方形图片加文字 -->
               <div v-if="!noSquare" class="vicp-preview-item">
                 <img :src="createImgUrl" :style="previewStyle">
                 <span>{{ lang.preview }}</span>
               </div>
+              <!-- 圆形图片加文字 -->
               <div v-if="!noCircle" class="vicp-preview-item vicp-preview-item-circle">
                 <img :src="createImgUrl" :style="previewStyle">
                 <span>{{ lang.preview }}</span>
@@ -104,43 +126,55 @@
           </div>
         </div>
         <div class="vicp-operate">
+          <!-- 返回按钮 -->
           <a @click="setStep(1)" @mousedown="ripple">{{ lang.btn.back }}</a>
+          <!-- 继续按钮 -->
           <a class="vicp-operate-btn" @click="prepareUpload" @mousedown="ripple">{{ lang.btn.save }}</a>
         </div>
       </div>
 
+      <!-- 图片上传完毕 -->
       <div v-if="step == 3" class="vicp-step3">
         <div class="vicp-upload">
+          <!-- 上传状态提示文本 -->
           <span v-show="loading === 1" class="vicp-loading">{{ lang.loading }}</span>
+          <!--上传条状动画 -->
           <div class="vicp-progress-wrap">
             <span v-show="loading === 1" :style="progressStyle" class="vicp-progress" />
           </div>
+          <!--上传失败提示文本 -->
           <div v-show="hasError" class="vicp-error">
+            <!-- 制作红色叉叉 -->
             <i class="vicp-icon2" />
             {{ errorMsg }}
           </div>
+          <!--上传成功提示文本 -->
           <div v-show="loading === 2" class="vicp-success">
             <i class="vicp-icon3" />
             {{ lang.success }}
           </div>
         </div>
+        <!--底部连个按钮 -->
         <div class="vicp-operate">
+          <!-- 返回 -->
           <a @click="setStep(2)" @mousedown="ripple">{{ lang.btn.back }}</a>
+          <!-- 关闭 -->
           <a @click="off" @mousedown="ripple">{{ lang.btn.close }}</a>
         </div>
       </div>
+      <!-- 定义了一块画布 -->
       <canvas v-show="false" ref="canvas" :width="width" :height="height" />
     </div>
   </div>
 </template>
 
 <script>
-'use strict'
-import request from '@/utils/request'
-import language from './utils/language.js'
-import mimes from './utils/mimes.js'
-import data2blob from './utils/data2blob.js'
-import effectRipple from './utils/effectRipple.js'
+'use strict' // 设置严格模式
+import request from '@/utils/request' // 导入请求模块
+import language from './utils/language.js' // 导入多语言模块
+import mimes from './utils/mimes.js' // 设置可以使用的图片格式
+import data2blob from './utils/data2blob.js' // 数据转化为二进制
+import effectRipple from './utils/effectRipple.js' //
 export default {
   props: {
     // 域，上传文件name，触发事件会带上（如果一个页面多个图片上传控件，可以做区分
@@ -411,9 +445,9 @@ export default {
     // 关闭控件
     off() {
       setTimeout(() => {
-        this.$emit('input', false)
+        this.$emit('input', false) // 发出两个事件
         this.$emit('close')
-        if (this.step === 3 && this.loading === 2) {
+        if (this.step === 3 && this.loading === 2) { // 如果是在步骤3且是成功的状态，那么上传完毕后就跳到最开始上传的步骤去
           this.setStep(1)
         }
       }, 200)
@@ -433,9 +467,10 @@ export default {
     },
     handleClick(e) {
       if (this.loading !== 1) {
+        console.log(this.$refs.fileinput)
         if (e.target !== this.$refs.fileinput) {
           e.preventDefault()
-          if (document.activeElement !== this.$refs) {
+          if (this.l !== this.$refs) {
             this.$refs.fileinput.click()
           }
         }
@@ -1277,7 +1312,7 @@ export default {
   .vicp-crop-left
   .vicp-range
   input[type="range"] {
-  display: block;
+  display: inline-block;
   padding-top: 5px;
   margin: 0 auto;
   width: 180px;
@@ -1693,7 +1728,7 @@ export default {
 }
 .vue-image-crop-upload .vicp-wrap .vicp-error,
 .vue-image-crop-upload .vicp-wrap .vicp-success {
-  display: block;
+  display: inline-block;
   font-size: 14px;
   line-height: 24px;
   height: 24px;

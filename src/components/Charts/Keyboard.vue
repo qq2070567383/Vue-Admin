@@ -1,13 +1,19 @@
 <template>
-  <div :id="id" :class="className" :style="{height:height,width:width}" />
+  <!-- 给echarts设置一个盒子，宽高由父盒子设置 -->
+  <div
+    :id="id"
+    :class="className"
+    :style="{height:height,width:width}"
+  />
 </template>
 
 <script>
+// 导入echarts和混入
 import echarts from 'echarts'
 import resize from './mixins/resize'
 
 export default {
-  mixins: [resize],
+  mixins: [resize], // 以数组的形式使用混入
   props: {
     className: {
       type: String,
@@ -28,16 +34,18 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null // 设置了echarts
     }
   },
   mounted() {
     this.initChart()
   },
+  // 组件销毁之前，判断是否有echarts，有的话就进行销毁实例，变量初始化
   beforeDestroy() {
     if (!this.chart) {
       return
     }
+    // echarts自带方法。销毁实例，销毁后实例无法再被使用。
     this.chart.dispose()
     this.chart = null
   },

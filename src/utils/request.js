@@ -3,81 +3,77 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
-// create an axios instance
+// 创建axios实例
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  // 需要在不同环境下请求不同地址
+  // url = 基本url加上请求url
+  baseURL: process.env.VUE_APP_BASE_API,
+  // 设置超时时间
+  timeout: 5000
 })
 
-// request interceptor
+// 请求拦截器
 service.interceptors.request.use(
-  config => {
-    // do something before request is sent
-
+  // 一个是请求在请求之前为url携带上请求头
+  config => { // config就是一个promise
+    // 取值，如果store里面有token
     if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
+      // 那么让每一个请求头都带上token
       config.headers['X-Token'] = getToken()
     }
     return config
   },
+  // 一个是直接请求错误的话
   error => {
-    // do something with request error
-    console.log(error) // for debug
+    console.log(error)
+    // 抛出错误，阻止程序运行
     return Promise.reject(error)
   }
 )
 
-// response interceptor
+// 响应拦截器
 service.interceptors.response.use(
-  /**
-   * If you want to get http information such as headers or status
-   * Please return  response => response
-  */
-
-  /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
-   */
+  // 一个是请求的状态码不对
   response => {
     const res = response.data
-
-    // if the custom code is not 20000, it is judged as an error.
+    console.log(response.data)
+    // 如果响应的状态码不等于20000，那么就调用element-ui里面的Message，提示文字为res.message 或 'Error',持续5秒
     if (res.code !== 20000) {
       Message({
         message: res.message || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+      // 如果响应的状态码不等于50008或50012或50014
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        // 调用element-ui里面的confirm提示框，第二个参数是提示框标题，第三个参数是配置项
+        MessageBox.confirm('您已注销，可以取消以停留在此页面，或重新登录', '确认注销', {
+          confirmButtonText: '登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          // 异步存值，之后进行浏览器刷新，浏览器重新从服务器请求资源
           store.dispatch('user/resetToken').then(() => {
+            // 页面刷新，重新请求数据
             location.reload()
           })
         })
       }
+      // 抛出以个新的错误
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
     }
   },
+  // 一个是直接响应错误
   error => {
-    console.log('err' + error) // for debug
+    console.log('错误' + error) // for debug
     Message({
       message: error.message,
       type: 'error',
       duration: 5 * 1000
     })
+    // 抛出错误，阻止程序运行
     return Promise.reject(error)
   }
 )

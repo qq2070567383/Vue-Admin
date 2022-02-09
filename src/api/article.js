@@ -1,5 +1,7 @@
 import request from '@/utils/request'
+// 导入axios实例
 
+// 导出一个函数，这个函数会返回请求数据后的结果
 export function fetchList(query) {
   return request({
     url: '/vue-element-admin/article/list',

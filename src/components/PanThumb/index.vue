@@ -1,8 +1,9 @@
+<!--头衔组件-->
 <template>
   <div :style="{zIndex:zIndex,height:height,width:width}" class="pan-item">
     <div class="pan-info">
       <div class="pan-info-roles-container">
-        <slot />
+        <slot />   <!--用来给圆里面添加文字用的 -->
       </div>
     </div>
     <!-- eslint-disable-next-line -->
@@ -50,6 +51,7 @@ export default {
   text-align: center;
 }
 
+/* 设置背景图片定位加旋转 */
 .pan-thumb {
   width: 100%;
   height: 100%;
@@ -81,7 +83,7 @@ export default {
   height: inherit;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.05);  /* 内圆使用的是阴影 */
 }
 
 .pan-info h3 {

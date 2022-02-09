@@ -1,5 +1,7 @@
+<!-- 琴键图-->
 <template>
   <div class="chart-container">
+    <!-- -父向子传递固定数据不用使用 :  -->
     <chart height="100%" width="100%" />
   </div>
 </template>

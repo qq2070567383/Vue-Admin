@@ -24,6 +24,7 @@ export default {
   },
   created() {
     this.getData()
+    console.log(process.env.NODE_ENV)
   },
   methods: {
     getData() {
@@ -31,6 +32,7 @@ export default {
       fetchList().then(response => {
         this.list1 = response.data.items.splice(0, 5)
         this.list2 = response.data.items
+        console.log(this.list1)
       })
     }
   }

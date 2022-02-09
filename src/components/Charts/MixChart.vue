@@ -1,4 +1,5 @@
 <template>
+  <!-- 之所以动态写id和class是为了以后的复用 -->
   <div :id="id" :class="className" :style="{height:height,width:width}" />
 </template>
 

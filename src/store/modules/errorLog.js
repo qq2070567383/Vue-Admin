@@ -1,13 +1,13 @@
 const state = {
-  logs: []
+  logs: [] // 错误日记
 }
 
 const mutations = {
-  ADD_ERROR_LOG: (state, log) => {
+  ADD_ERROR_LOG: (state, log) => { // 添加日志
     state.logs.push(log)
   },
-  CLEAR_ERROR_LOG: (state) => {
-    state.logs.splice(0)
+  CLEAR_ERROR_LOG: (state) => { // 清除日志
+    state.logs.splice(0) // splice(0) 会把原数组清空
   }
 }
 

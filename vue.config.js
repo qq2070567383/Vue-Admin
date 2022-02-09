@@ -25,19 +25,22 @@ module.exports = {
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
   publicPath: '/',
-  outputDir: 'dist',
+  outputDir: 'dist',  //打包输出路劲
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
+  // 这是用于配置Webpack Dev Server的配置
   devServer: {
     port: port,
-    open: true,
+    open: true,    //设置启动服务时是否自动打开浏览器
     overlay: {
       warnings: false,
       errors: true
     },
+    //通过这一行来实现在webpack-dev-serve启动之前启动mock-server服务的
     before: require('./mock/mock-server.js')
   },
+  // 配置别名
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
@@ -48,6 +51,7 @@ module.exports = {
       }
     }
   },
+  //这里是配置webpack的loader(资源加载链)
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
     // it can improve the speed of the first screen, it is recommended to turn on preload

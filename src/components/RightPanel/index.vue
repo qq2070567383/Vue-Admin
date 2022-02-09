@@ -1,11 +1,17 @@
+<!-- 右面板组件 -->
 <template>
   <div ref="rightPanel" :class="{show:show}" class="rightPanel-container">
+    <!-- 左边遮罩层 -->
     <div class="rightPanel-background" />
+    <!-- 右边设置 -->
     <div class="rightPanel">
+      <!-- 设置按钮 -->
       <div class="handle-button" :style="{'top':buttonTop+'px','background-color':theme}" @click="show=!show">
+        <!-- 动态切换字体图标 -->
         <i :class="show?'el-icon-close':'el-icon-setting'" />
       </div>
       <div class="rightPanel-items">
+        <!-- 插槽可以用来插组件 -->
         <slot />
       </div>
     </div>
@@ -13,27 +19,27 @@
 </template>
 
 <script>
+// 导入两函数
 import { addClass, removeClass } from '@/utils'
-
 export default {
   name: 'RightPanel',
   props: {
-    clickNotClose: {
+    clickNotClose: { // 点击遮罩层是否关闭
       default: false,
       type: Boolean
     },
-    buttonTop: {
+    buttonTop: { // 按钮高度
       default: 250,
       type: Number
     }
   },
   data() {
     return {
-      show: false
+      show: false // 设置面板显示隐藏，默认不显示
     }
   },
   computed: {
-    theme() {
+    theme() { // 设置主题
       return this.$store.state.settings.theme
     }
   },

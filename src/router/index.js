@@ -1,12 +1,14 @@
+// 使用路由必须先导入vue和vue-router ，然后用vue.use( ) 安装路由
+// 路由中的 / 就表示‘ 下 ’ ， 比如/permission/page 就表示先加载permission相对应的组件，然后再加载page相对应的组件
 import Vue from 'vue'
 import Router from 'vue-router'
 
 Vue.use(Router)
 
-/* Layout */
+/* 导入布局*/
 import Layout from '@/layout'
 
-/* Router Modules */
+/* 路由模块*/
 import componentsRouter from './modules/components'
 import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
@@ -16,28 +18,27 @@ import nestedRouter from './modules/nested'
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
  *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
  * alwaysShow: true               if set true, will always show the root menu
  *                                if not set alwaysShow, when item has more than one children route,
  *                                it will becomes nested mode, otherwise not show the root menu
  * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
+
     title: 'title'               the name show in sidebar and breadcrumb (recommend set)
     icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
     noCache: true                if set true, the page will no be cached(default is false)
-    affix: true                  if set true, the tag will affix in the tags-view
     breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
     activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
   }
  */
 
-/**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
- */
+// hidden: true  控制该导航栏的名字是否在侧边栏显示
+// affix: true   控制该导航栏的名字是否在tag上显示
+// roles: ['admin', 'editor']    设置只有相应角色权限才能访问该页面
+// name  一定要填写不然使用<keep-alive>时会出现各种问题
+
+// 静态路由，任何权限的账号都有权访问
 export const constantRoutes = [
   {
     path: '/redirect',
@@ -73,7 +74,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/dashboard', // 访问根目录时，重定向到/dashboard
     children: [
       {
         path: 'dashboard',
@@ -112,7 +113,6 @@ export const constantRoutes = [
     path: '/profile',
     component: Layout,
     redirect: '/profile/index',
-    hidden: true,
     children: [
       {
         path: 'index',
@@ -124,21 +124,18 @@ export const constantRoutes = [
   }
 ]
 
-/**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
- */
+// 动态路由，只有有对应权限的账号才有资格权访问
 export const asyncRoutes = [
   {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
-    alwaysShow: true, // will always show the root menu
+    alwaysShow: true, // 始终显示根菜单
     name: 'Permission',
     meta: {
       title: 'Permission',
       icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      roles: ['admin', 'editor'] // 设置什么角色可以访问这个路由
     },
     children: [
       {
@@ -147,7 +144,7 @@ export const asyncRoutes = [
         name: 'PagePermission',
         meta: {
           title: 'Page Permission',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['admin'] // 或者你设置只有这个角色可以访问
         }
       },
       {
@@ -156,7 +153,7 @@ export const asyncRoutes = [
         name: 'DirectivePermission',
         meta: {
           title: 'Directive Permission'
-          // if do not set roles, means: this page does not require permission
+          // 如果不设置角色，则表示：此页面不需要权限
         }
       },
       {
@@ -184,7 +181,7 @@ export const asyncRoutes = [
     ]
   },
 
-  /** when your routing map is too long, you can split it into small modules **/
+  /** 当路由图太长时，可以将其拆分为小模块**/
   componentsRouter,
   chartsRouter,
   nestedRouter,
@@ -383,14 +380,14 @@ export const asyncRoutes = [
     ]
   },
 
-  // 404 page must be placed at the end !!!
+  // 404 页面一定要放最后面 !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  mode: 'history', // 需要后端支持才能用这种模式
+  scrollBehavior: () => ({ y: 0 }), // 滚动行为  用来解决使用keep-alive标签后部分安卓机返回缓存页位置不精确问题，页面返回出现空白屏问题等问题
+  routes: constantRoutes // 这些路由直接能访问
 })
 
 const router = createRouter()
@@ -398,7 +395,7 @@ const router = createRouter()
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  router.matcher = newRouter.matcher // 删除现有路线
 }
 
 export default router

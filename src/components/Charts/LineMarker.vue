@@ -1,9 +1,14 @@
 <template>
-  <div :id="id" :class="className" :style="{height:height,width:width}" />
+  <div
+    :id="id"
+    :class="className"
+    :style="{height:height,width:width}"
+  />
 </template>
 
 <script>
 import echarts from 'echarts'
+// 导入混入
 import resize from './mixins/resize'
 
 export default {
@@ -28,17 +33,19 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null // 设置了echarts
     }
   },
   mounted() {
     this.initChart()
   },
+  // 页面销毁时对echarts进行初始化
   beforeDestroy() {
+    // 如果this.chart没有值，就直接返回
     if (!this.chart) {
       return
     }
-    this.chart.dispose()
+    this.chart.dispose() // echarts自带方法。销毁实例，销毁后实例无法再被使用。
     this.chart = null
   },
   methods: {

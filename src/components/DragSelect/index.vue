@@ -1,3 +1,4 @@
+<!--下拉选择器-->
 <template>
   <el-select ref="dragSelect" v-model="selectVal" v-bind="$attrs" class="drag-select" multiple v-on="$listeners">
     <slot />

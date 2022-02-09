@@ -45,7 +45,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -251,6 +251,8 @@ export function getTime(type) {
  * @param {boolean} immediate
  * @return {*}
  */
+
+// 防抖函数
 export function debounce(func, wait, immediate) {
   let timeout, args, context, timestamp, result
 
@@ -330,6 +332,8 @@ export function createUniqueString() {
  * @param {HTMLElement} elm
  * @param {string} cls
  * @returns {boolean}
+ * !!一般用来将后面的表达式强制转换为布尔类型的数据（boolean），也就是只能是true或者false
+ * match（）方法返回所匹配到的字符串所组成的一个数组，否则返回null
  */
 export function hasClass(ele, cls) {
   return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'))
@@ -340,6 +344,7 @@ export function hasClass(ele, cls) {
  * @param {HTMLElement} elm
  * @param {string} cls
  */
+// 增加元素样式
 export function addClass(ele, cls) {
   if (!hasClass(ele, cls)) ele.className += ' ' + cls
 }
@@ -349,6 +354,7 @@ export function addClass(ele, cls) {
  * @param {HTMLElement} elm
  * @param {string} cls
  */
+// 移除元素样式
 export function removeClass(ele, cls) {
   if (hasClass(ele, cls)) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')

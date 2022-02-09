@@ -1,8 +1,8 @@
-const Mock = require('mockjs')
-const { deepClone } = require('../utils')
-const { asyncRoutes, constantRoutes } = require('./routes.js')
+const Mock = require('mockjs')  
+const { deepClone } = require('../utils')   //导入深拷贝函数
+const { asyncRoutes, constantRoutes } = require('./routes.js')  //导入侧边框模拟数据
 
-const routes = deepClone([...constantRoutes, ...asyncRoutes])
+const routes = deepClone([...constantRoutes, ...asyncRoutes])   //深拷贝静态路由和动态路由
 
 const roles = [
   {
@@ -15,12 +15,12 @@ const roles = [
     key: 'editor',
     name: 'editor',
     description: 'Normal Editor. Can see all pages except permission page',
-    routes: routes.filter(i => i.path !== '/permission')// just a mock
+    routes: routes.filter(i => i.path !== '/permission')    // 返回所有路劲不等于/permission的路由
   },
   {
-    key: 'visitor',
+    key: 'visitor',   //只返回两个路由
     name: 'visitor',
-    description: 'Just a visitor. Can only see the home page and the document page',
+    description: 'Just a visitor. Can only see the home page and the document page',    
     routes: [{
       path: '',
       redirect: 'dashboard',
@@ -36,7 +36,7 @@ const roles = [
 ]
 
 module.exports = [
-  // mock get all routes form server
+  // 得到全部路由
   {
     url: '/vue-element-admin/routes',
     type: 'get',
@@ -48,7 +48,7 @@ module.exports = [
     }
   },
 
-  // mock get all roles form server
+  // 模拟从服务器获取所有角色
   {
     url: '/vue-element-admin/roles',
     type: 'get',
@@ -60,7 +60,7 @@ module.exports = [
     }
   },
 
-  // add role
+  // 添加角色
   {
     url: '/vue-element-admin/role',
     type: 'post',
@@ -72,7 +72,7 @@ module.exports = [
     }
   },
 
-  // update role
+  // 更新角色
   {
     url: '/vue-element-admin/role/[A-Za-z0-9]',
     type: 'put',
@@ -84,7 +84,7 @@ module.exports = [
     }
   },
 
-  // delete role
+  // 删除角色
   {
     url: '/vue-element-admin/role/[A-Za-z0-9]',
     type: 'delete',
